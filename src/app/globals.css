@@ -2,6 +2,7 @@
 
 :root {
   --background: #ffffff;
+  --background1: #F5F5F5;
   --foreground: #171717;
 }
 
@@ -20,7 +21,7 @@
 }
 
 body {
-  background: var(--background);
+  background: var(--background1);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }

@@ -1,5 +1,5 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 import "./globals.css";
 
 
@@ -10,7 +10,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-br" >
-      <body>{children}</body>
+      <body className="bg-[#F5F5F5] flex flex-col min-h-screen">
+        <Header />
+        
+        <main className="flex-grow max-w-screen-xl mx-auto p-8 w-full bg-white shadow-md">
+          {children}
+        </main>
+        
+        <Footer />
+      </body>
     </html>
   );
 }

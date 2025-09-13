@@ -14,7 +14,6 @@ export default function Home() {
     //#F5F5F5
     
     <>
-    <Header />
     <BoxWelcome />
     
     </>

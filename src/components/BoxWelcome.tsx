@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function BoxWelcome() {
   return (
-    <div className="flex flex-col gap-4 justify-center items-center bg-[#283593] h-50  w-screen m-2 rounded-xs">
+    <div className="flex flex-col gap-4 justify-center items-center bg-[#283593] h-70  w-full m-2 rounded-xs">
       <h1 className="text-4xl font-medium">Bem-vindo ao OlimpoMatematica!</h1>
       <p>Sua jornada para o sucesso nas Olimpíadas de Matemática começa aqui.</p>
       <Link

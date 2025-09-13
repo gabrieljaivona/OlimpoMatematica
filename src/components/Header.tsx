@@ -12,7 +12,7 @@ export default function Header() {
     { href: '/', label: 'Início'},
     { href: '/olimpiadas', label: 'Olimpíadas'},
     { href: '/cursos', label: 'Cursos' },
-    { href: '/materiais-de-estudos', label: 'Materiais' },
+    { href: '/material-de-estudos', label: 'Materiais' },
     { href: '/minhas-atividades', label: 'Minhas Atividades' },
     { href: '/curiosidades-matematicas', label: 'Curiosidades Matemáticas' },
     { href: '/progresso', label: 'Progresso ' },
