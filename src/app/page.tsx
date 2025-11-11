@@ -1,4 +1,3 @@
-import BoxWelcome from "@/components/BoxWelcome";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 
@@ -14,7 +13,7 @@ export default function Home() {
     //#F5F5F5
     
     <>
-    <BoxWelcome />
+    
     
     </>
   );
