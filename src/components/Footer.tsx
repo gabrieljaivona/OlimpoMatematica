@@ -32,7 +32,7 @@ const Footer = () => {
                 <Facebook className="h-5 w-5" />
               </a>
               <a 
-                href="#" 
+                href="https://www.instagram.com/gedsoftware/" 
                 className="bg-white/10 hover:bg-[#FF9800] p-2 rounded-lg transition-colors duration-200"
                 aria-label="Instagram"
               >
