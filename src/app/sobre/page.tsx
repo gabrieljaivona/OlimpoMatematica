@@ -12,7 +12,25 @@ export default function SobrePage() {
   
   // --- SIMULAÇÃO DE USUÁRIO (Igual ao Header) ---
   // Mude para true para ver como fica a versão logada
-  const isUserLoggedIn = false; 
+  const usuarioLogado = false; 
+
+  const levels = [
+    {
+      level: 'Nível 1',
+      description: 'Para alunos do 6º e 7º anos do Ensino Fundamental',
+      topics: ['Aritmética básica', 'Geometria plana', 'Problemas lógicos']
+    },
+    {
+      level: 'Nível 2', 
+      description: 'Para alunos do 8º e 9º anos do Ensino Fundamental',
+      topics: ['Álgebra elementar', 'Geometria euclidiana', 'Combinatória básica']
+    },
+    {
+      level: 'Nível 3',
+      description: 'Para alunos do Ensino Médio',
+      topics: ['Funções avançadas', 'Geometria analítica', 'Teoria dos números']
+    }
+  ];
 
   const features = [
     {
@@ -42,29 +60,13 @@ export default function SobrePage() {
     { number: '95%', label: 'Taxa de Satisfação', icon: Star }
   ];
 
-  const levels = [
-    {
-      level: 'Nível 1',
-      description: 'Para alunos do 6º e 7º anos do Ensino Fundamental',
-      topics: ['Aritmética básica', 'Geometria plana', 'Problemas lógicos']
-    },
-    {
-      level: 'Nível 2', 
-      description: 'Para alunos do 8º e 9º anos do Ensino Fundamental',
-      topics: ['Álgebra elementar', 'Geometria euclidiana', 'Combinatória básica']
-    },
-    {
-      level: 'Nível 3',
-      description: 'Para alunos do Ensino Médio',
-      topics: ['Funções avançadas', 'Geometria analítica', 'Teoria dos números']
-    }
-  ];
+
 
   return (
     <main className="w-full bg-[#F5F5F5]">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         
-        {/* Hero Section */}
+        {/* Cabeçalho da página */}
         <div className="text-center mb-16">
           <div className="flex justify-center mb-6">
             <div className="bg-[#283593] p-4 rounded-full shadow-lg">
@@ -82,7 +84,7 @@ export default function SobrePage() {
           </p>
         </div>
 
-        {/* Mission Section */}
+        {/* Seção de missões */}
         <div className="bg-white rounded-xl shadow-md overflow-hidden mb-16">
           <div className="p-8">
             <div className="grid md:grid-cols-2 gap-8 items-center">
@@ -130,7 +132,7 @@ export default function SobrePage() {
           </div>
         </div>
 
-        {/* OBMEP Section */}
+        {/* Seção sobre a OBMEP */}
         <div className="bg-white rounded-xl shadow-md overflow-hidden mb-16">
           <div className="p-6 border-b border-gray-100">
             <h2 className="text-3xl font-bold text-[#283593] flex items-center">
@@ -196,7 +198,7 @@ export default function SobrePage() {
           </div>
         </div>
 
-        {/* Features Section */}
+        {/* Seção sobre nossa plataforma */}
         <div className="mb-16">
           <h2 className="text-3xl font-bold text-[#283593] text-center mb-12">
             Como Nossa Plataforma Funciona
@@ -216,7 +218,7 @@ export default function SobrePage() {
           </div>
         </div>
 
-        {/* Stats Section */}
+        {/* Seção sobre nossa comunidade */}
         <div className="mb-16 bg-gradient-to-r from-[#283593] to-[#FF9800] rounded-xl shadow-lg overflow-hidden">
           <div className="p-12">
             <h2 className="text-3xl font-bold text-white text-center mb-12">
@@ -250,7 +252,7 @@ export default function SobrePage() {
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              {!isUserLoggedIn ? (
+              {!usuarioLogado ? (
                 <>
                   <Link
                     href="/login"
