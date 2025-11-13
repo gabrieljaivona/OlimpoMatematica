@@ -1,6 +1,5 @@
-import Footer from "@/components/Footer";
-import Header from "@/components/Header";
-
+import BoxWelcome from '@/components/BoxWelcome';
+import FeaturedMaterials from '@/components/FeaturedMaterials';
 
 export default function Home() {
   return (
@@ -14,7 +13,11 @@ export default function Home() {
     
     <>
     
-    
+      {/* Seção de Boas-vindas */}
+      <BoxWelcome />
+
+      {/* Seção de Materiais em Destaque */}
+      <FeaturedMaterials />
     </>
   );
 }

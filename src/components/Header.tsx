@@ -1,141 +1,201 @@
 // src/components/Header.tsx
-'use client'; 
+'use client';
 
 import Link from 'next/link';
-import { User, LogOut } from 'lucide-react'; // Importei ícones para o perfil e logout
+import { usePathname } from 'next/navigation'; // Hook para saber em qual página estamos
+import { 
+  Trophy, 
+  Home, 
+  BookOpen, 
+  MessageSquare, 
+  FileText,
+  BarChart3,
+  User,
+  Info,
+  PenTool // Ícone para "Meus Envios"
+} from 'lucide-react';
 
-// --- (INÍCIO) SIMULAÇÃO DE AUTENTICAÇÃO ---
-// No projeto real, você vai REMOVER este bloco e usar o hook useSession
-// Ex: import { useSession } from 'next-auth/react'; 
+// --- (INÍCIO) SIMULAÇÃO DE DADOS (MOCK) ---
+// Mude estas variáveis para testar os diferentes perfis!
+const STATUS_ATUAL = 'authenticated'; // 'authenticated' ou 'unauthenticated'
 
-// Definição dos nossos tipos de usuário
-type UserRole = 'ALUNO' | 'PROFESSOR' | 'ESTAGIARIO' | 'ADMIN' | 'PUBLIC';
-
-// 🛑 IMPORTANTE: TROQUE OS VALORES AQUI PARA TESTAR 🛑
-const mockSession = {
-  // status: 'loading', // Descomente para testar o estado de carregamento
-  // status: 'unauthenticated', // Descomente para testar como "visitante" (não logado)
-  
-  status: 'authenticated', // Mantenha este para testar os usuários logados
-  data: {
-    user: {
-      name: 'Bob (Aluno)', // Nome do usuário
-      role: 'ALUNO' as UserRole, // ⬅️ TROQUE AQUI para 'PROFESSOR', 'ESTAGIARIO', 'ADMIN'
-    }
-  }
+// Tipos: 'ALUNO' | 'PROFESSOR' | 'ESTAGIARIO' | 'ADMIN'
+const USUARIO_ATUAL = {
+  id: '1',
+  name: 'Reaper',
+  role: 'ADMIN', // <--- TROQUE AQUI PARA TESTAR
 };
-// --- (FIM) SIMULAÇÃO DE AUTENTICAÇÃO ---
+// --- (FIM) SIMULAÇÃO ---
 
-
-// --- (INÍCIO) DEFINIÇÃO DOS LINKS E PERMISSÕES ---
-type NavLink = {
-  href: string;
-  label: string;
-  roles: UserRole[]; // Lista de funções que podem ver este link
-};
-
-// Esta é nossa lista MESTRA de todos os links com suas permissões
-const allNavLinks: NavLink[] = [
-  // 1. Links Públicos
-  { href: '/', label: 'Início', roles: ['PUBLIC', 'ALUNO', 'PROFESSOR', 'ESTAGIARIO', 'ADMIN'] },
-  { href: '/materiais', label: 'Materiais', roles: ['PUBLIC', 'ALUNO', 'PROFESSOR', 'ESTAGIARIO', 'ADMIN'] },
-  { href: '/sobre', label: 'Sobre', roles: ['PUBLIC', 'ALUNO', 'PROFESSOR', 'ESTAGIARIO', 'ADMIN'] },
-  
-  // 2. Links de Aluno
-  { href: '/forum', label: 'Fórum', roles: ['ALUNO', 'PROFESSOR', 'ADMIN'] },
-  { href: '/avaliacoes', label: 'Avaliações', roles: ['ALUNO', 'ADMIN'] },
-  
-  // 3. Link de Estagiário
-  { href: '/meus-envios', label: 'Meus Envios', roles: ['ESTAGIARIO', 'ADMIN'] },
-  
-  // 4. Links de Professor
-  { href: '/estatisticas', label: 'Estatísticas/Progresso', roles: ['PROFESSOR', 'ADMIN'] },
-  { href: '/revisar-conteudo', label: 'Revisar Conteúdo', roles: ['PROFESSOR', 'ADMIN'] },
-  
-  // 5. Link de Perfil (Para todos logados)
-  { href: '/perfil', label: 'Perfil', roles: ['ALUNO', 'PROFESSOR', 'ESTAGIARIO', 'ADMIN'] }
-];
-// --- (FIM) DEFINIÇÃO DOS LINKS ---
-
-
-// --- Componente Principal do Header ---
 export default function Header() {
-  
-  // --- (INÍCIO) LÓGICA DE AUTENTICAÇÃO ---
-  // No projeto real, você vai descomentar a linha abaixo:
-  // const { data: session, status } = useSession();
-  
-  // E apagar estas duas linhas de mock:
-  const { data: session, status } = mockSession;
+  const pathname = usePathname(); // Pega a URL atual para destacar o botão ativo
 
-  // 1. Determina a função (role) atual do usuário
-  const userRole: UserRole = session?.user?.role || 'PUBLIC';
-  // --- (FIM) LÓGICA DE AUTENTICAÇÃO ---
+  // Função auxiliar para verificar permissão
+  const temPermissao = (cargosPermitidos: string[]) => {
+    if (STATUS_ATUAL !== 'authenticated') return false;
+    return cargosPermitidos.includes(USUARIO_ATUAL.role);
+  };
 
+  // Definição dos itens de navegação
+  const navItems = [
+    { 
+      id: 'home', 
+      href: '/', 
+      label: 'Início', 
+      icon: Home,
+      visible: true // Sempre visível
+    },
+    { 
+      id: 'materials', 
+      href: '/materiais', 
+      label: 'Materiais', 
+      icon: BookOpen,
+      visible: true 
+    },
+    { 
+      id: 'about', 
+      href: '/sobre', 
+      label: 'Sobre', 
+      icon: Info,
+      visible: true 
+    },
+    { 
+      id: 'forum', 
+      href: '/forum', 
+      label: 'Fórum', 
+      icon: MessageSquare,
+      visible: temPermissao(['ALUNO', 'PROFESSOR', 'ADMIN']) 
+    },
+    { 
+      id: 'evaluations', 
+      href: '/avaliacoes', 
+      label: 'Avaliações', 
+      icon: FileText,
+      visible: temPermissao(['ALUNO', 'ADMIN']) 
+    },
+    {
+      id: 'my-uploads',
+      href: '/meus-envios',
+      label: 'Meus Envios',
+      icon: PenTool,
+      visible: temPermissao(['ESTAGIARIO', 'ADMIN'])
+    },
+    { 
+      id: 'stats', 
+      href: '/estatisticas', 
+      label: 'Estatísticas', 
+      icon: BarChart3,
+      visible: temPermissao(['PROFESSOR', 'ADMIN']) 
+    }
+  ];
 
-  // --- (INÍCIO) LÓGICA DE FILTRO DE LINKS ---
-  // 2. Filtra a lista mestra para mostrar apenas os links que o usuário atual pode ver
-  const availableLinks = allNavLinks.filter(link => 
-    link.roles.includes(userRole)
-  );
-  // --- (FIM) LÓGICA DE FILTRO DE LINKS ---
+  // Filtra apenas os itens visíveis para o usuário atual
+  const visibleNavItems = navItems.filter(item => item.visible);
+
+  // Função para decidir para onde o botão "Minha Área" leva
+  const getDashboardLink = () => {
+    switch (USUARIO_ATUAL.role) {
+      case 'PROFESSOR': return '/revisar-conteudo';
+      case 'ESTAGIARIO': return '/meus-envios';
+      case 'ADMIN': return '/admin';
+      default: return '/perfil';
+    }
+  };
 
   return (
-    <header className="shadow-md border-b-2 border-[#FF9800]">
-      <div className="bg-[#283593] text-[#F5F5F5] px-8 py-4 flex items-center justify-between">
-        
-        {/* Lado Esquerdo: Logo */}
-        <div className="flex items-center gap-10">
-          <Link href="/" className="text-2xl font-bold">
-            OlimpoMatemático
+    <header className="bg-[#283593] text-white shadow-lg sticky top-0 z-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center py-4">
+          
+          {/* --- LOGO --- */}
+          <Link href="/" className="flex items-center cursor-pointer hover:opacity-80 transition-opacity group">
+            <div className="bg-[#BF8841] p-2 rounded-lg mr-3 group-hover:bg-[#d4984a] transition-colors">
+              <Trophy className="h-8 w-8 text-white" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold leading-tight">Olimpo Matemático</h1>
+              <p className="text-blue-200 text-xs uppercase tracking-wider font-semibold">Preparação OBMEP</p>
+            </div>
           </Link>
-        </div>
 
-        {/* Lado Direito: Navegação Dinâmica e Ações do Usuário */}
-        <div className="flex items-center gap-6">
-
-          {/* 1. Navegação Principal (Agora filtrada) */}
-          <nav className="hidden md:flex items-center gap-6">
-            {availableLinks.map((link) => (
-              <Link key={link.href} href={link.href} className="font-medium hover:text-[#FF9800] transition-colors">
-                {link.label}
-              </Link>
-            ))}
+          {/* --- NAVEGAÇÃO (Desktop) --- */}
+          <nav className="hidden lg:flex items-center space-x-2">
+            {visibleNavItems.map((item) => {
+              const Icon = item.icon;
+              const isActive = pathname === item.href;
+              
+              return (
+                <Link
+                  key={item.id}
+                  href={item.href}
+                  className={`flex items-center px-3 py-2 rounded-lg transition-all duration-200 font-medium ${
+                    isActive 
+                      ? 'bg-blue-700 text-white shadow-sm' 
+                      : 'text-blue-200 hover:text-white hover:bg-blue-800'
+                  }`}
+                >
+                  <Icon className="h-4 w-4 mr-2" />
+                  {item.label}
+                </Link>
+              );
+            })}
           </nav>
 
-          {/* 2. Ações do Usuário (Login / Perfil / Logout) */}
-          <div className="flex items-center gap-4">
-            
-            {/* Estado de Carregamento */}
-            {status === 'loading' && (
-              <div className="h-8 w-24 bg-slate-500 rounded-md animate-pulse"></div>
-            )}
-            
-            {/* Estado Não Logado (Público) */}
-            {status === 'unauthenticated' && (
-              <Link href="/auth" className="bg-[#FF9800] text-[#283593] font-bold py-2 px-4 rounded-md hover:opacity-90 transition-opacity">
+          {/* --- AÇÕES DO USUÁRIO --- */}
+          <div className="flex items-center space-x-4">
+            {STATUS_ATUAL === 'authenticated' ? (
+              <div className="flex items-center space-x-4 pl-4 border-l border-blue-700">
+                
+                {/* Info do Usuário - Clicável */}
+                <Link href="/perfil" className="hidden sm:block text-right cursor-pointer hover:opacity-80 transition-opacity">
+                  <p className="text-white font-medium text-sm">{USUARIO_ATUAL.name}</p>
+                  <p className="text-[#FF9800] text-xs font-bold uppercase">
+                    {USUARIO_ATUAL.role}
+                  </p>
+                </Link>
+
+                {/* Botão Minha Área */}
+                <Link
+                  href={getDashboardLink()}
+                  className="flex items-center border border-blue-400 text-blue-100 hover:bg-white hover:text-[#283593] px-4 py-2 rounded-md transition-colors font-medium text-sm"
+                >
+                  <User className="h-4 w-4 mr-2" />
+                  <span className="hidden sm:inline">Minha Área</span>
+                </Link>
+              </div>
+            ) : (
+              <Link
+                href="/login"
+                className="bg-[#FF9800] hover:bg-[#e68a00] text-white font-bold px-6 py-2 rounded-md shadow-md transition-transform hover:scale-105 active:scale-95"
+              >
                 Login / Cadastrar
               </Link>
             )}
+          </div>
+        </div>
 
-            {/* Estado Logado (Autenticado) */}
-            {status === 'authenticated' && (
-              <>
-                {/* O link de "Perfil" já está no menu de navegação,
-                  mas manter um ícone de atalho é uma boa prática 
-                */}
-                <Link href="/perfil" aria-label="Meu Perfil">
-                  <User className="hover:text-[#FF9800] transition-colors" />
-                </Link>
-                <button 
-                  onClick={() => { /* Lógica de Logout (ex: signOut()) */ }}
-                  aria-label="Sair"
-                  className="hover:text-[#FF9800] transition-colors"
+        {/* --- NAVEGAÇÃO MOBILE (Aparece em telas pequenas) --- */}
+        <div className="lg:hidden border-t border-blue-800 pt-4 pb-4">
+          <div className="flex flex-wrap gap-2">
+            {visibleNavItems.map((item) => {
+              const Icon = item.icon;
+              const isActive = pathname === item.href;
+              
+              return (
+                <Link
+                  key={item.id}
+                  href={item.href}
+                  className={`flex items-center px-3 py-2 rounded-lg text-sm transition-all duration-200 ${
+                    isActive 
+                      ? 'bg-blue-700 text-white' 
+                      : 'text-blue-200 hover:text-white hover:bg-blue-800'
+                  }`}
                 >
-                  <LogOut size={22} />
-                </button>
-              </>
-            )}
+                  <Icon className="h-4 w-4 mr-2" />
+                  {item.label}
+                </Link>
+              );
+            })}
           </div>
         </div>
       </div>
