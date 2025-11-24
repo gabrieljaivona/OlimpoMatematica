@@ -3,11 +3,11 @@
 
 import { useState, useCallback } from 'react';
 import { BookOpen, Clock, Star, Download, FileText, Video, Layers, Search } from 'lucide-react';
-import SearchAndFilterBar from '@/components/SearchAndFilterBar';
+import SearchAndFilterBar from '@/components/SearchAndFilterBar'; // Este componente ainda está em inglês
 
 // --- MOCK DATA (Dados Simulados) ---
 // Enquanto o backend não fica pronto, usamos isso para ver a página funcionando
-const mockMaterials = [
+const materiaisSimulados = [
   {
     id: 1,
     title: "Álgebra Fundamental - Apostila Completa",
@@ -65,40 +65,40 @@ const mockMaterials = [
   }
 ];
 
-export default function MaterialsPage() {
+export default function PaginaMateriais() {
   // Estados para os filtros
-  const [filteredMaterials, setFilteredMaterials] = useState(mockMaterials);
-  const [loading, setLoading] = useState(false);
+  const [materiaisFiltrados, setMateriaisFiltrados] = useState(materiaisSimulados);
+  const [carregando, setCarregando] = useState(false);
 
   // Função que recebe os filtros do componente SearchAndFilterBar
   // Envolvemos com useCallback para evitar o loop infinito
-  const handleFilterChange = useCallback((filters: { searchTerm: string; type: string; level: string }) => {
-    setLoading(true);
+  const lidarComMudancaDeFiltro = useCallback((filtros: { searchTerm: string; type: string; level: string }) => {
+    setCarregando(true);
     
     // Simula um pequeno delay para parecer que está buscando
     setTimeout(() => {
-      const results = mockMaterials.filter(material => {
+      const resultados = materiaisSimulados.filter(material => {
         // Filtro de Busca (Texto)
-        const matchesSearch = material.title.toLowerCase().includes(filters.searchTerm.toLowerCase()) ||
-                              material.description.toLowerCase().includes(filters.searchTerm.toLowerCase());
+        const correspondeABusca = material.title.toLowerCase().includes(filtros.searchTerm.toLowerCase()) ||
+                              material.description.toLowerCase().includes(filtros.searchTerm.toLowerCase());
         
         // Filtro de Tipo
-        const matchesType = filters.type === 'all' || material.type === filters.type;
+        const correspondeAoTipo = filtros.type === 'all' || material.type === filtros.type;
         
         // Filtro de Nível
-        const matchesLevel = filters.level === 'all' || material.level === filters.level;
+        const correspondeAoNivel = filtros.level === 'all' || material.level === filtros.level;
 
-        return matchesSearch && matchesType && matchesLevel;
+        return correspondeABusca && correspondeAoTipo && correspondeAoNivel;
       });
 
-      setFilteredMaterials(results);
-      setLoading(false);
+      setMateriaisFiltrados(resultados);
+      setCarregando(false);
     }, 300); // 300ms de delay
   }, []); // <--- O array vazio [] significa: "Nunca recrie esta função"
 
   // Função auxiliar para ícone do arquivo
-  const getFileIcon = (type: string) => {
-    switch (type) {
+  const pegarIconeArquivo = (tipo: string) => {
+    switch (tipo) {
       case 'pdf': return <FileText className="h-5 w-5 text-red-500" />;
       case 'video': return <Video className="h-5 w-5 text-blue-500" />;
       default: return <BookOpen className="h-5 w-5 text-gray-500" />;
@@ -106,8 +106,8 @@ export default function MaterialsPage() {
   };
 
   // Função auxiliar para cor da dificuldade
-  const getDifficultyColor = (difficulty: string) => {
-    switch (difficulty) {
+  const pegarCorDificuldade = (dificuldade: string) => {
+    switch (dificuldade) {
       case 'facil': return 'bg-green-100 text-green-800';
       case 'medio': return 'bg-yellow-100 text-yellow-800';
       case 'dificil': return 'bg-red-100 text-red-800';
@@ -121,8 +121,8 @@ export default function MaterialsPage() {
         
         {/* --- Header da Página --- */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-[#283593] mb-2">Materiais de Estudo</h1>
-          <p className="text-gray-600">
+          <h1 className="flex flex-col justify-center items-center text-3xl font-bold text-[#283593] mb-2">Materiais de Estudo</h1>
+          <p className="text-gray-600 m-auto">
             Explore nossa biblioteca completa de recursos para a OBMEP. Use os filtros abaixo para encontrar o que precisa.
           </p>
         </div>
@@ -130,18 +130,18 @@ export default function MaterialsPage() {
         {/* --- Barra de Filtros (Componente Reutilizável) --- */}
         <div className="mb-8">
           <SearchAndFilterBar 
-            onFilterChange={handleFilterChange}
+            onFilterChange={lidarComMudancaDeFiltro}
             placeholder="Pesquisar por título, assunto..."
           />
         </div>
 
         {/* --- Lista de Resultados --- */}
-        {loading ? (
+        {carregando ? (
           <div className="flex justify-center items-center h-64">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#283593]"></div>
             <p className="ml-4 text-[#283593] font-medium">Buscando materiais...</p>
           </div>
-        ) : filteredMaterials.length === 0 ? (
+        ) : materiaisFiltrados.length === 0 ? (
           <div className="bg-white rounded-xl shadow-sm p-12 text-center">
             <BookOpen className="h-16 w-16 text-gray-300 mx-auto mb-4" />
             <h3 className="text-xl font-medium text-gray-900 mb-2">Nenhum material encontrado</h3>
@@ -149,7 +149,7 @@ export default function MaterialsPage() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredMaterials.map((material) => (
+            {materiaisFiltrados.map((material) => (
               <div key={material.id} className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col border border-gray-100">
                 
                 {/* Card Header */}
@@ -158,7 +158,7 @@ export default function MaterialsPage() {
                     {material.title}
                   </h3>
                   <div className="p-2 bg-gray-50 rounded-lg shrink-0">
-                    {getFileIcon(material.type)}
+                    {pegarIconeArquivo(material.type)}
                   </div>
                 </div>
 
@@ -174,7 +174,7 @@ export default function MaterialsPage() {
                       <Layers className="h-3 w-3 mr-1 text-[#BF8841]" />
                       Nível {material.level}
                     </div>
-                    <div className={`flex items-center px-2 py-1 rounded ${getDifficultyColor(material.difficulty)}`}>
+                    <div className={`flex items-center px-2 py-1 rounded ${pegarCorDificuldade(material.difficulty)}`}>
                       <Star className="h-3 w-3 mr-1" />
                       <span className="capitalize">{material.difficulty}</span>
                     </div>
@@ -186,9 +186,9 @@ export default function MaterialsPage() {
 
                   {/* Tópicos */}
                   <div className="flex flex-wrap gap-1 mb-4">
-                    {material.topics.map((topic, index) => (
+                    {material.topics.map((topico, index) => (
                       <span key={index} className="bg-blue-50 text-[#283593] text-[10px] px-2 py-1 rounded-full font-semibold">
-                        {topic}
+                        {topico}
                       </span>
                     ))}
                   </div>
