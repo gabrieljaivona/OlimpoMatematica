@@ -62,7 +62,7 @@ export default function BoxWelcome() {
             {/* Botão de Ação (Transformado em Link) */}
             <div className="pt-4">
               <Link 
-                href="/login"
+                href="/auth"
                 className="inline-flex items-center justify-center bg-[#FF9800] hover:bg-orange-600 text-white font-bold px-8 py-4 rounded-xl text-lg transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
               >
                 Começar a Estudar
